@@ -64,12 +64,33 @@ oven done --note "Completed the feature"
 - `oven resume` - Resume a paused session
 - `oven done` - End the current session
 
-### Coming Soon
+### Analytics & History
 
-- `oven log` - View session history
-- `oven stats` - Time tracking statistics
-- `oven archive/unarchive` - Archive projects
-- `oven git init` - Create and initialize GitHub repos
+- `oven log [project]` - View session history
+  - `--today` - Show only today's sessions
+  - `--week` - Show this week's sessions
+  - `--since <date>` - Show sessions since date
+- `oven stats [project]` - Time tracking statistics
+  - `--week` - This week's stats
+  - `--month` - This month's stats
+  - `--all` - All-time stats (default)
+
+### Archive Management
+
+- `oven archive <name>` - Archive a project
+- `oven unarchive <name>` - Restore an archived project
+
+### GitHub Integration
+
+- `oven git orgs` - List available GitHub organizations
+- `oven git init <org>/<repo>` - Create and initialize a GitHub repository
+  - `--public` / `--private` - Repository visibility
+  - `--desc` - Repository description
+  - `--path` - Local directory path
+  - `--clone` - Clone instead of init
+  - `--push-initial` - Create initial commit and push
+  - `--readme` - Generate README.md
+  - `--ssh` / `--https` - Protocol choice
 
 ## Features
 
