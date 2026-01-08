@@ -1,6 +1,6 @@
 {
-  "name": "oven-cli",
-  "version": "0.2.0",
+  "name": "@somniatore/oven",
+  "version": "0.3.0",
   "description": "Local project & work session manager",
   "main": "dist/index.js",
   "bin": {
@@ -10,6 +10,9 @@
     "build": "tsc",
     "dev": "tsc && node bin/oven.js",
     "link": "npm run build && npm link"
+  },
+  "publishConfig": {
+    "registry": "https://npm.somniatore.com"
   },
   "keywords": [
     "cli",
