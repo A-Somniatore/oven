@@ -18,15 +18,22 @@ export const showCommand = new Command('show')
     const sessions = getSessionsForProject(project.id!, 5);
     const totalTime = sessions.reduce((acc, s) => acc + getSessionDuration(s), 0);
 
+    const descriptionLine = project.description && project.description.trim()
+      ? `${chalk.cyan('Description:')} ${project.description}\n`
+      : '';
+    const tagsLine = project.tags && project.tags.trim()
+      ? `${chalk.cyan('Tags:')} ${project.tags}\n`
+      : '';
+    const lastActiveLine = project.last_active_at
+      ? `${chalk.cyan('Last Active:')} ${formatRelativeTime(project.last_active_at)}\n`
+      : '';
+
     const details = `
 ${chalk.bold.cyan('Project:')} ${chalk.bold(project.name)}
 ${chalk.gray('─'.repeat(50))}
 ${chalk.cyan('Path:')} ${project.path}
-${project.description ? `${chalk.cyan('Description:')} ${project.description}` : ''}
-${project.tags ? `${chalk.cyan('Tags:')} ${project.tags}` : ''}
-${chalk.cyan('Created:')} ${formatRelativeTime(project.created_at)}
-${project.last_active_at ? `${chalk.cyan('Last Active:')} ${formatRelativeTime(project.last_active_at)}` : ''}
-${chalk.cyan('Total Time:')} ${formatDuration(totalTime)}
+${descriptionLine}${tagsLine}${chalk.cyan('Created:')} ${formatRelativeTime(project.created_at)}
+${lastActiveLine}${chalk.cyan('Total Time:')} ${formatDuration(totalTime)}
 ${chalk.cyan('Sessions:')} ${sessions.length} recent
 
 ${sessions.length > 0 ? chalk.gray('Recent sessions:') : ''}

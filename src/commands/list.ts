@@ -21,11 +21,12 @@ export const listCommand = new Command('list')
       head: [
         chalk.bold('Project'),
         chalk.bold('Path'),
+        chalk.bold('Tags'),
         chalk.bold('Last Active'),
         chalk.bold('Status'),
       ],
       style: { head: ['cyan'] },
-      colWidths: [25, 50, 20, 15],
+      colWidths: [20, 40, 20, 15, 15],
       wordWrap: true,
     });
 
@@ -36,10 +37,14 @@ export const listCommand = new Command('list')
       const lastActive = project.last_active_at
         ? formatRelativeTime(project.last_active_at)
         : chalk.gray('never');
+      const tags = project.tags && project.tags.trim()
+        ? chalk.cyan(project.tags)
+        : chalk.gray('-');
 
       table.push([
         name,
         chalk.gray(project.path),
+        tags,
         lastActive,
         status,
       ]);

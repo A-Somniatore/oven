@@ -63,7 +63,7 @@ export const addCommand = new Command('add')
     let projectName: string;
     let projectOptions: any = options;
 
-    // Interactive mode if no name provided
+    // Full interactive mode if no name provided
     if (!name) {
       projectData = await interactiveAdd(options?.path);
       projectName = projectData.name;
@@ -73,7 +73,39 @@ export const addCommand = new Command('add')
         tags: projectData.tags,
       };
     } else {
+      // Name provided, but ask for missing fields
       projectName = name;
+
+      // If description or tags not provided via flags, prompt for them
+      if (!options?.desc || !options?.tags) {
+        const cwd = process.cwd();
+        const defaultPath = options?.path || cwd;
+
+        const missingFields = await prompts([
+          {
+            type: options?.desc ? null : 'text',
+            name: 'description',
+            message: 'Description (optional):',
+          },
+          {
+            type: options?.tags ? null : 'text',
+            name: 'tags',
+            message: 'Tags (comma-separated, optional):',
+            format: (value: string) => value.trim() || undefined,
+          },
+        ], {
+          onCancel: () => {
+            console.log(chalk.gray('\nCancelled'));
+            process.exit(0);
+          },
+        });
+
+        projectOptions = {
+          path: options?.path || cwd,
+          desc: options?.desc || missingFields.description,
+          tags: options?.tags || missingFields.tags,
+        };
+      }
     }
 
     const config = getConfig();
