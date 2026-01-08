@@ -28,8 +28,11 @@ npm link
 ## Quick Start
 
 ```bash
-# Add a project
-oven add MyProject --path ~/projects/myproject --desc "My awesome project"
+# Add a project (interactive mode - will prompt for details)
+oven add MyProject
+
+# Or add with all details upfront
+oven add MyProject --path ~/projects/myproject --desc "My awesome project" --tags "web,react"
 
 # Start working on it
 oven cook MyProject --task "Building new feature"
@@ -51,9 +54,12 @@ oven done --note "Completed the feature"
 
 ### Project Management
 
-- `oven add <name> --path <dir>` - Register a new project
-- `oven list` - List all projects
-- `oven show <name>` - Show project details
+- `oven add [name]` - Register a new project (interactive mode with prompts)
+  - `--path <dir>` - Project directory (defaults to current directory)
+  - `--desc <description>` - Project description
+  - `--tags <tags>` - Comma-separated tags
+- `oven list` - List all projects with tags
+- `oven show <name>` - Show detailed project information
 - `oven open <name>` - Open project in your editor
 
 ### Work Sessions (Cooking!)
@@ -99,6 +105,9 @@ oven done --note "Completed the feature"
 - ⏱️ Automatic time tracking
 - 🔥 Only one active session at a time (stay focused!)
 - 🚀 Fast and lightweight
+- 📝 Interactive prompts for easy project setup
+- 🏷️ Tag and organize your projects
+- 📊 Rich project metadata (description, tags, creation date)
 
 ## Configuration
 
