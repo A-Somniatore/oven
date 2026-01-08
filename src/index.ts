@@ -9,19 +9,25 @@ import { openCommand } from './commands/open';
 import { cookCommand } from './commands/cook';
 import { nowCommand } from './commands/now';
 import { pauseCommand, resumeCommand, doneCommand } from './commands/session';
+import { archiveCommand, unarchiveCommand } from './commands/archive';
+import { logCommand } from './commands/log';
+import { statsCommand } from './commands/stats';
+import { gitCommand } from './commands/git';
 
 const program = new Command();
 
 program
   .name('oven')
   .description(chalk.bold('🍳 Oven - Local Project & Work Session Manager'))
-  .version('0.1.0');
+  .version('0.2.0');
 
 // Project management
 program.addCommand(addCommand);
 program.addCommand(listCommand);
 program.addCommand(showCommand);
 program.addCommand(openCommand);
+program.addCommand(archiveCommand);
+program.addCommand(unarchiveCommand);
 
 // Work sessions
 program.addCommand(cookCommand);
@@ -29,5 +35,12 @@ program.addCommand(nowCommand);
 program.addCommand(pauseCommand);
 program.addCommand(resumeCommand);
 program.addCommand(doneCommand);
+
+// Analytics
+program.addCommand(logCommand);
+program.addCommand(statsCommand);
+
+// GitHub integration
+program.addCommand(gitCommand);
 
 program.parse();
