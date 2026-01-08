@@ -10,6 +10,7 @@ import { cookCommand } from './commands/cook';
 import { nowCommand } from './commands/now';
 import { pauseCommand, resumeCommand, doneCommand } from './commands/session';
 import { archiveCommand, unarchiveCommand } from './commands/archive';
+import { removeCommand } from './commands/remove';
 import { logCommand } from './commands/log';
 import { statsCommand } from './commands/stats';
 import { gitCommand } from './commands/git';
@@ -26,6 +27,7 @@ program.addCommand(addCommand);
 program.addCommand(listCommand);
 program.addCommand(showCommand);
 program.addCommand(openCommand);
+program.addCommand(removeCommand);
 program.addCommand(archiveCommand);
 program.addCommand(unarchiveCommand);
 
