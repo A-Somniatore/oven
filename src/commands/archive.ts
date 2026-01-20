@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { getProjectByName, archiveProject, unarchiveProject } from '../lib/db';
+import prompts from 'prompts';
+import { getProjectByName, getProjects, archiveProject, unarchiveProject } from '../lib/db';
 import { Project } from '../types';
 
 export function archiveProjectAction(project: Project) {
@@ -27,24 +28,76 @@ export function unarchiveProjectAction(project: Project) {
 
 export const archiveCommand = new Command('archive')
   .description('Archive a project')
-  .argument('<name>', 'Project name')
-  .action((name: string) => {
-    const project = getProjectByName(name);
-    if (!project) {
-      console.log(chalk.red(`✖ Project "${name}" not found`));
+  .argument('[name]', 'Project name (optional)')
+  .action(async (name?: string) => {
+    let project: Project | undefined;
+
+    if (name) {
+      project = getProjectByName(name);
+      if (project) {
+        archiveProjectAction(project);
+        return;
+      }
+    }
+
+    const projects = getProjects({ name, includeArchived: false });
+
+    if (projects.length === 0) {
+      console.log(chalk.red('✖ No projects found to archive'));
       process.exit(1);
     }
-    archiveProjectAction(project);
+
+    if (projects.length === 1) {
+      project = projects[0];
+    } else {
+      const { selectedProject } = await prompts({
+        type: 'select',
+        name: 'selectedProject',
+        message: 'Choose a project to archive',
+        choices: projects.map(p => ({ title: p.name, value: p })),
+      });
+      project = selectedProject;
+    }
+
+    if (project) {
+      archiveProjectAction(project);
+    }
   });
 
 export const unarchiveCommand = new Command('unarchive')
   .description('Unarchive a project')
-  .argument('<name>', 'Project name')
-  .action((name: string) => {
-    const project = getProjectByName(name);
-    if (!project) {
-      console.log(chalk.red(`✖ Project "${name}" not found`));
+  .argument('[name]', 'Project name (optional)')
+  .action(async (name?: string) => {
+    let project: Project | undefined;
+
+    if (name) {
+      project = getProjectByName(name);
+      if (project) {
+        unarchiveProjectAction(project);
+        return;
+      }
+    }
+
+    const projects = getProjects({ name, includeArchived: true }).filter(p => p.archived);
+
+    if (projects.length === 0) {
+      console.log(chalk.red('✖ No projects found to unarchive'));
       process.exit(1);
     }
-    unarchiveProjectAction(project);
+
+    if (projects.length === 1) {
+      project = projects[0];
+    } else {
+      const { selectedProject } = await prompts({
+        type: 'select',
+        name: 'selectedProject',
+        message: 'Choose a project to unarchive',
+        choices: projects.map(p => ({ title: p.name, value: p })),
+      });
+      project = selectedProject;
+    }
+
+    if (project) {
+      unarchiveProjectAction(project);
+    }
   });

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import prompts from 'prompts';
-import { getProjectByName } from '../lib/db';
+import { getProjectByName, getProjects } from '../lib/db';
 import db from '../lib/db';
 import { Project } from '../types';
 
@@ -31,15 +31,39 @@ export async function removeProject(project: Project, force = false) {
 
 export const removeCommand = new Command('remove')
   .description('Remove a project from Oven')
-  .argument('<name>', 'Project name')
+  .argument('[name]', 'Project name (optional)')
   .option('-f, --force', 'Skip confirmation')
-  .action(async (name: string, options) => {
-    const project = getProjectByName(name);
+  .action(async (name: string | undefined, options) => {
+    let project: Project | undefined;
 
-    if (!project) {
-      console.log(chalk.red(`✖ Project "${name}" not found`));
+    if (name) {
+      project = getProjectByName(name);
+      if (project) {
+        await removeProject(project, options.force);
+        return;
+      }
+    }
+
+    const projects = getProjects({ name });
+
+    if (projects.length === 0) {
+      console.log(chalk.red('✖ No projects found'));
       process.exit(1);
     }
 
-    await removeProject(project, options.force);
+    if (projects.length === 1) {
+      project = projects[0];
+    } else {
+      const { selectedProject } = await prompts({
+        type: 'select',
+        name: 'selectedProject',
+        message: 'Choose a project to remove',
+        choices: projects.map(p => ({ title: p.name, value: p })),
+      });
+      project = selectedProject;
+    }
+
+    if (project) {
+      await removeProject(project, options.force);
+    }
   });

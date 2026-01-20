@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { spawn } from 'child_process';
-import { getProjectByName } from '../lib/db';
+import prompts from 'prompts';
+import { getProjectByName, getProjects } from '../lib/db';
 import { getConfig } from '../lib/config';
 import { Project } from '../types';
 
@@ -20,14 +21,38 @@ export function openProject(project: Project) {
 
 export const openCommand = new Command('open')
   .description('Open project in editor')
-  .argument('<name>', 'Project name')
-  .action((name: string) => {
-    const project = getProjectByName(name);
+  .argument('[name]', 'Project name (optional)')
+  .action(async (name?: string) => {
+    let project: Project | undefined;
 
-    if (!project) {
-      console.log(chalk.red(`✖ Project "${name}" not found`));
+    if (name) {
+      project = getProjectByName(name);
+      if (project) {
+        openProject(project);
+        return;
+      }
+    }
+
+    const projects = getProjects({ name });
+
+    if (projects.length === 0) {
+      console.log(chalk.red('✖ No projects found'));
       process.exit(1);
     }
 
-    openProject(project);
+    if (projects.length === 1) {
+      project = projects[0];
+    } else {
+      const { selectedProject } = await prompts({
+        type: 'select',
+        name: 'selectedProject',
+        message: 'Choose a project to open',
+        choices: projects.map(p => ({ title: p.name, value: p })),
+      });
+      project = selectedProject;
+    }
+
+    if (project) {
+      openProject(project);
+    }
   });

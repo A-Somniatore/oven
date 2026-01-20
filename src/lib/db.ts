@@ -69,11 +69,27 @@ export function addProject(project: Omit<Project, 'id'>): number {
   return result.lastInsertRowid as number;
 }
 
-export function getProjects(includeArchived = false): Project[] {
-  const query = includeArchived
-    ? 'SELECT * FROM projects ORDER BY last_active_at DESC, name'
-    : 'SELECT * FROM projects WHERE archived = 0 ORDER BY last_active_at DESC, name';
-  return db.prepare(query).all() as Project[];
+export function getProjects(options: { includeArchived?: boolean; name?: string } = {}): Project[] {
+  const { includeArchived = false, name = '' } = options;
+  let query = 'SELECT * FROM projects';
+  const params: any[] = [];
+
+  const conditions: string[] = [];
+  if (!includeArchived) {
+    conditions.push('archived = 0');
+  }
+  if (name) {
+    conditions.push('name LIKE ?');
+    params.push(`${name}%`);
+  }
+
+  if (conditions.length > 0) {
+    query += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  query += ' ORDER BY last_active_at DESC, name';
+
+  return db.prepare(query).all(...params) as Project[];
 }
 
 export function getProjectByName(name: string): Project | undefined {

@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import boxen from 'boxen';
-import { getProjectByName, getSessionsForProject } from '../lib/db';
+import prompts from 'prompts';
+import { getProjectByName, getProjects, getSessionsForProject } from '../lib/db';
 import { formatRelativeTime, formatDuration, getSessionDuration } from '../lib/utils';
 import { Project } from '../types';
 
@@ -45,14 +46,38 @@ ${sessions.map(s => {
 
 export const showCommand = new Command('show')
   .description('Show project details')
-  .argument('<name>', 'Project name')
-  .action((name: string) => {
-    const project = getProjectByName(name);
+  .argument('[name]', 'Project name (optional)')
+  .action(async (name?: string) => {
+    let project: Project | undefined;
 
-    if (!project) {
-      console.log(chalk.red(`✖ Project "${name}" not found`));
+    if (name) {
+      project = getProjectByName(name);
+      if (project) {
+        showProject(project);
+        return;
+      }
+    }
+
+    const projects = getProjects({ name });
+
+    if (projects.length === 0) {
+      console.log(chalk.red('✖ No projects found'));
       process.exit(1);
     }
 
-    showProject(project);
+    if (projects.length === 1) {
+      project = projects[0];
+    } else {
+      const { selectedProject } = await prompts({
+        type: 'select',
+        name: 'selectedProject',
+        message: 'Choose a project to show',
+        choices: projects.map(p => ({ title: p.name, value: p })),
+      });
+      project = selectedProject;
+    }
+
+    if (project) {
+      showProject(project);
+    }
   });

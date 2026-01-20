@@ -15,7 +15,7 @@ export const listCommand = new Command('list')
   .option('-a, --archived', 'Include archived projects')
   .option('-i, --interactive', 'Run in interactive mode')
   .action(async (options) => {
-    const projects = getProjects(options.archived);
+    const projects = getProjects({ includeArchived: options.archived });
     const activeSession = getActiveSession();
     const activeProjectId = activeSession?.project_id;
 
