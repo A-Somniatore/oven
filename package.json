@@ -24,6 +24,7 @@
   "author": "ghaz",
   "license": "MIT",
   "dependencies": {
+    "@somniatore/oven": "^0.3.2",
     "@types/omelette": "^0.4.5",
     "@types/prompts": "^2.4.9",
     "better-sqlite3": "^9.2.2",

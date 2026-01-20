@@ -3,6 +3,20 @@ import chalk from 'chalk';
 import { spawn } from 'child_process';
 import { getProjectByName } from '../lib/db';
 import { getConfig } from '../lib/config';
+import { Project } from '../types';
+
+export function openProject(project: Project) {
+  const config = getConfig();
+  console.log(chalk.gray(`Opening ${project.name} in ${config.editor_command}...`));
+
+  const editor = spawn(config.editor_command, [project.path], {
+    detached: true,
+    stdio: 'ignore',
+  });
+
+  editor.unref();
+  console.log(chalk.green(`✓ Opened ${project.name}`));
+}
 
 export const openCommand = new Command('open')
   .description('Open project in editor')
@@ -15,14 +29,5 @@ export const openCommand = new Command('open')
       process.exit(1);
     }
 
-    const config = getConfig();
-    console.log(chalk.gray(`Opening ${project.name} in ${config.editor_command}...`));
-
-    const editor = spawn(config.editor_command, [project.path], {
-      detached: true,
-      stdio: 'ignore',
-    });
-
-    editor.unref();
-    console.log(chalk.green(`✓ Opened ${project.name}`));
+    openProject(project);
   });
