@@ -24,6 +24,7 @@
   "author": "ghaz",
   "license": "MIT",
   "dependencies": {
+    "@types/omelette": "^0.4.5",
     "@types/prompts": "^2.4.9",
     "better-sqlite3": "^9.2.2",
     "boxen": "^5.1.2",
@@ -31,6 +32,7 @@
     "cli-table3": "^0.6.3",
     "commander": "^12.0.0",
     "dayjs": "^1.11.10",
+    "omelette": "^0.4.17",
     "ora": "^5.4.1",
     "prompts": "^2.4.2"
   },

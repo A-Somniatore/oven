@@ -14,6 +14,11 @@ import { removeCommand } from './commands/remove';
 import { logCommand } from './commands/log';
 import { statsCommand } from './commands/stats';
 import { gitCommand } from './commands/git';
+import { initCompletion } from './lib/completion';
+import { completionCommand } from './commands/completion';
+
+// Initialize completion
+initCompletion();
 
 const program = new Command();
 
@@ -30,6 +35,7 @@ program.addCommand(openCommand);
 program.addCommand(removeCommand);
 program.addCommand(archiveCommand);
 program.addCommand(unarchiveCommand);
+program.addCommand(completionCommand);
 
 // Work sessions
 program.addCommand(cookCommand);
