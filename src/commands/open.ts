@@ -44,10 +44,13 @@ export const openCommand = new Command('open')
       project = projects[0];
     } else {
       const { selectedProject } = await prompts({
-        type: 'select',
+        type: 'autocomplete',
         name: 'selectedProject',
         message: 'Choose a project to open',
         choices: projects.map(p => ({ title: p.name, value: p })),
+        suggest: (input, choices) => {
+          return Promise.resolve(choices.filter(c => c.title.toLowerCase().includes(input.toLowerCase())));
+        }
       });
       project = selectedProject;
     }
