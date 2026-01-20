@@ -29,10 +29,10 @@ completion.on('argument', ({ reply, line }) => {
   const command = args[1];
 
   if (['open', 'cook', 'show', 'remove', 'archive'].includes(command)) {
-    const projects = getProjects(false);
+    const projects = getProjects({ includeArchived: false });
     reply(projects.map(p => p.name));
   } else if (command === 'unarchive') {
-    const allProjects = getProjects(true);
+    const allProjects = getProjects({ includeArchived: true });
     const archived = allProjects.filter(p => p.archived);
     reply(archived.map(p => p.name));
   }
