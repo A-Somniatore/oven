@@ -1,0 +1,13 @@
+maturity: internal
+type: service
+display_name: "Oven"
+description: "Local project and work session manager CLI tool"
+owners:
+  - platform-engineering
+systems:
+  - oven
+tags:
+  - cli
+  - typescript
+  - productivity
+  - session-management
